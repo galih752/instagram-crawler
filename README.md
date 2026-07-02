@@ -2,7 +2,8 @@
 
 Native Instagram crawler using [instagrapi](https://github.com/subzeroid/instagrapi) with multi-output support (Kafka, NSQ, Beanstalk, File, Stdout).
 
-> ⚠️ **Dependency:** Requires [Token Management API](../token_management_all_platform/) for Instagram session pool.  
+> ⚠️ **Dependency:** Requires [Token Management API](https://github.com/galih752/token-management-social-media) for Instagram session pool.  
+> Clone and run token management first: `git clone https://github.com/galih752/token-management-social-media.git`
 > Run the token management service first before starting this crawler.
 
 ## Architecture
