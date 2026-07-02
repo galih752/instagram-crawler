@@ -40,7 +40,7 @@ source/
 
 ## Requirements
 
-- Python 3.12+
+- Python 3.10+
 - Redis (cache / dedup)
 - SSDB (persistent dedup, Redis-protocol compatible)
 - Beanstalkd (job queue)

@@ -8,7 +8,7 @@ version = "1.0.0"
 description = "Native Instagram crawler using instagrapi with multi-output support"
 readme = "README.md"
 license = {text = "MIT"}
-requires-python = ">=3.12"
+requires-python = ">=3.10"
 authors = [
     {name = "Data Engineering Team"},
 ]
@@ -47,12 +47,12 @@ packages = ["source"]
 
 [tool.black]
 line-length = 120
-target-version = ["py312"]
+target-version = ["py310"]
 
 [tool.ruff]
 line-length = 120
-target-version = "py312"
+target-version = "py310"
 
 [tool.mypy]
-python_version = "3.12"
+python_version = "3.10"
 ignore_missing_imports = true
