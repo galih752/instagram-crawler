@@ -1,0 +1,97 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: instagram-crawler
+  namespace: crawlers
+  labels:
+    app: instagram-crawler
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: instagram-crawler
+  template:
+    metadata:
+      labels:
+        app: instagram-crawler
+    spec:
+      containers:
+        - name: crawler
+          image: registry.example.com/instagram-crawler:latest
+          imagePullPolicy: Always
+          command: ["python"]
+          args:
+            - "source/main.py"
+            - "crawler"
+            - "--mode"
+            - "instagram"
+            - "--type"
+            - "$(CRAWLER_TYPE)"
+            - "--config"
+            - "/app/config/config.ini"
+            - "-s"
+            - "beanstalk"
+            - "-d"
+            - "kafka"
+            - "-i"
+            - "$(INPUT_TUBE)"
+            - "-o"
+            - "$(OUTPUT_TOPIC)"
+            - "--beanstalk-host"
+            - "$(BEANSTALK_HOST)"
+            - "--beanstalk-port"
+            - "$(BEANSTALK_PORT)"
+            - "--bootstrap-servers"
+            - "$(KAFKA_BOOTSTRAP_SERVERS)"
+            - "--cache"
+            - "true"
+          env:
+            - name: CRAWLER_TYPE
+              value: "post_by_account"
+            - name: INPUT_TUBE
+              value: "instagram_jobs"
+            - name: OUTPUT_TOPIC
+              value: "instagram_posts"
+            - name: BEANSTALK_HOST
+              value: "beanstalkd-service"
+            - name: BEANSTALK_PORT
+              value: "11300"
+            - name: KAFKA_BOOTSTRAP_SERVERS
+              value: "kafka-service:9092"
+
+            # Application configuration is loaded from /app/config/config.ini
+            # (mounted from ConfigMap). No environment-variable-based settings
+            # are used — all values come from the INI file.
+
+          volumeMounts:
+            - name: config
+              mountPath: /app/config
+              readOnly: true
+          resources:
+            requests:
+              cpu: "500m"
+              memory: "512Mi"
+            limits:
+              cpu: "2000m"
+              memory: "2048Mi"
+      volumes:
+        - name: config
+          configMap:
+            name: instagram-crawler-config
+      restartPolicy: Always
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: instagram-crawler
+  namespace: crawlers
+  labels:
+    app: instagram-crawler
+spec:
+  selector:
+    app: instagram-crawler
+  ports:
+    - port: 8080
+      targetPort: 8080
+      name: metrics
+  type: ClusterIP

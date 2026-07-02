@@ -1,0 +1,74 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: instagram-crawler-config
+  namespace: crawlers
+  labels:
+    app: instagram-crawler
+data:
+  config.ini: |
+    ; =============================================================================
+    ; Instagram Crawler — Configuration (deployed via ConfigMap)
+    ; =============================================================================
+
+    [service]
+    token_management = http://token-management-service:8000
+    tor_server = localhost
+
+    [beanstalk]
+    host = beanstalkd-service
+    port = 11300
+
+    [beanstalk_tube]
+    post = sc_instagram_post
+    comment = sc_instagram_comment
+    profile = sc_instagram_profile
+    download = socmed-downloader
+
+    [redis]
+    host = redis-service
+    port = 6379
+    db = 0
+    password =
+
+    [ssdb]
+    host = ssdb-service
+    port = 8888
+    password =
+
+    [ssdb_keys]
+    hash_keys_post = sc-instagram-post
+    hash_keys_comment = sc-instagram-comment
+    hash_keys_account = sc-instagram-account
+    hash_keys_error = sc-instagram-error
+
+    [kafka]
+    bootstrap_servers = kafka-service:9092
+    topic_post = sc-instagram-post
+    topic_comment = sc-instagram-comment
+
+    [nsq]
+    nsqd_http_address = nsqd-service:4151
+    topic = sc_instagram
+
+    [sentry]
+    dsn =
+
+    [external_proxy]
+    get_proxy_list =
+    pub_proxy =
+    webshare_token =
+
+    [proxy]
+    static_proxies =
+    iproxyal_url =
+
+    [count]
+    max_post = 50
+    max_days = 3
+    retry = 3
+    scroll = 5
+    default_until = 30
+
+    [log]
+    path = /tmp/log/instagram_crawler
